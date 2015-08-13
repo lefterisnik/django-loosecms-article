@@ -12,6 +12,7 @@ class ArticleAdmin(admin.ModelAdmin):
     date_hierarchy = 'utime'
     list_display = ('title', 'manager', 'get_page', 'published')
     list_filter = ('manager__page', 'manager')
+    list_editable = ('published',)
     
     def get_page(self, obj):
         return obj.manager.page

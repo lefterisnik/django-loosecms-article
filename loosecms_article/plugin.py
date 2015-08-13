@@ -31,10 +31,11 @@ class ArticlePlugin(PluginModelAdmin):
         ArticleInline,
     ]
     extra_initial_help = None
+    fields = ('type', 'placeholder', 'title', 'number', 'page', 'hide_categories', 'published')
 
     def render(self, context, manager):
         t = loader.get_template(self.template)
-        articles = Article.objects.select_related().filter(manager=manager)
+        articles = Article.objects.select_related().filter(manager=manager, published=True)
         categories = ArticleCategory.objects.annotate(Count('article')).filter(article__manager=manager)
         if 'kwargs' in context:
             if 'slug' in context['kwargs']:
@@ -77,7 +78,7 @@ class ArticlePlugin(PluginModelAdmin):
         if self.extra_initial_help:
             initial['type'] = self.extra_initial_help['type']
             initial['placeholder'] = self.extra_initial_help['placeholder']
-            initial['manager'] = self.extra_initial_help['page']
+            initial['page'] = self.extra_initial_help['page']
 
             return initial
         else:
@@ -93,7 +94,7 @@ class NewsArticlePlugin(PluginModelAdmin):
     extra_initial_help = None
 
     def render(self, context, manager):
-        newsarticles = Article.objects.select_related().all().order_by('-ctime')[:manager.number]
+        newsarticles = Article.objects.select_related().filter(published=True).order_by('-ctime')[:manager.number]
 
         t = loader.get_template(self.template)
         context['newsarticles'] = newsarticles
@@ -105,7 +106,6 @@ class NewsArticlePlugin(PluginModelAdmin):
         if self.extra_initial_help:
             initial['type'] = self.extra_initial_help['type']
             initial['placeholder'] = self.extra_initial_help['placeholder']
-            initial['manager'] = self.extra_initial_help['page']
 
             return initial
         else:
