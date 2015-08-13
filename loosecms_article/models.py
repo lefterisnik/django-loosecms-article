@@ -2,7 +2,7 @@
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.db import models
-from loosecms.models import Plugin, Page
+from loosecms.models import Plugin, HtmlPage
 from ckeditor.fields import RichTextField
 
 
@@ -11,16 +11,15 @@ class ArticleManager(Plugin):
                              help_text=_('Give the name of the article manager.'))
     number = models.IntegerField(_('number'), null=True, blank=True,
                                  help_text=_('Give the number of articles per page.'))
-    page = models.ForeignKey(Page, verbose_name=_('page'),
-                             help_text=_('Select the page which this article manager will showed. Is needed to know the '
-                                         'page of the article manager to create the unique article urls.'))
+    page = models.ForeignKey(HtmlPage, verbose_name=_('page'),
+                             limit_choices_to={'is_template': False},
+                             help_text=_('Select the page which this article manager will showed. Is needed to know '
+                                         'the page of the article manager to create the unique article urls.'))
     hide_categories = models.BooleanField(_('hide categories list'), default=False,
                                           help_text=_('Select if you want to hide the category list view.'))
     ctime = models.DateTimeField(auto_now_add=True)
 
     utime = models.DateTimeField(auto_now=True)
-
-    published = models.BooleanField(_('published'), default=True)
 
     def __unicode__(self):
         return "%s (%s)" %(self.title, self.type)
@@ -43,8 +42,6 @@ class NewsArticleManager(Plugin):
     ctime = models.DateTimeField(auto_now_add=True)
 
     utime = models.DateTimeField(auto_now=True)
-
-    published = models.BooleanField(_('published'), default=True)
 
     def __unicode__(self):
         return "%s (%s)" %(self.title, self.type)
