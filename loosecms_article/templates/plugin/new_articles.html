@@ -4,7 +4,7 @@
         <h3 class="panel-title">{% trans 'Recent Articles' %}</h3>
     </div>
     <div class="panel-body">
-        <div id="news-carousel" class="carousel slide" data-ride="carousel" data-interval="4000">
+        <div class="carousel slide" data-ride="carousel" data-interval="4000">
             <div class="carousel-inner">
                 {% for article in newsarticles %}
                     {% if forloop.counter == 1 %}
@@ -13,7 +13,7 @@
                         <div class="item">
                     {% endif %}
                     <h5>
-                        <a href="{% url 'article-info' article.manager.page.slug article.category.slug article.slug %}">{{ article.title }}</a><hr/>
+                        <a href="{% url 'info' article.manager.page.slug article.category.slug article.slug %}">{{ article.title }}</a><hr/>
                     </h5>
                     <h6>
                         {{ article.body|truncatewords_html:10|safe }}

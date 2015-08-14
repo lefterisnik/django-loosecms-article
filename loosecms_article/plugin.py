@@ -90,8 +90,9 @@ class NewsArticlePlugin(PluginModelAdmin):
     name = _('Recent Articles')
     form = NewsArticleManagerForm
     plugin = True
-    template = "plugin/news.html"
+    template = "plugin/new_articles.html"
     extra_initial_help = None
+    fields = ('type', 'placeholder', 'title', 'number', 'published')
 
     def render(self, context, manager):
         newsarticles = Article.objects.select_related().filter(published=True).order_by('-ctime')[:manager.number]
