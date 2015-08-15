@@ -92,10 +92,27 @@ class NewsArticlePlugin(PluginModelAdmin):
     plugin = True
     template = "plugin/new_articles.html"
     extra_initial_help = None
-    fields = ('type', 'placeholder', 'title', 'number', 'published')
+    fieldsets = (
+        (None, {
+            'fields': ('type', 'placeholder', 'title', 'number', 'published')
+        }),
+        ('Advanced options', {
+            'fields': ('manager', 'header_title', 'interval')
+        }),
+        ('Rss options', {
+            'fields': ('rss', ('rss_title', 'rss_description'))
+        }),
+    )
 
     def render(self, context, manager):
-        newsarticles = Article.objects.select_related().filter(published=True).order_by('-ctime')[:manager.number]
+        if manager.manager:
+            newsarticles = Article.objects.select_related().\
+                               filter(published=True, manager=manager.manager).\
+                               order_by('-ctime')[:manager.number]
+        else:
+            newsarticles = Article.objects.select_related().\
+                               filter(published=True).\
+                               order_by('-ctime')[:manager.number]
 
         t = loader.get_template(self.template)
         context['newsarticles'] = newsarticles

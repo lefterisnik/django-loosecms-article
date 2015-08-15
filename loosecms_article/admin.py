@@ -10,6 +10,7 @@ class ArticleCategoryAdmin(admin.ModelAdmin):
 
 
 class ArticleAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('title', )}
     date_hierarchy = 'utime'
     list_display = ('title', 'manager', 'get_page', 'published')
     list_filter = ('manager__page', 'manager')
