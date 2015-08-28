@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
-from django.utils.translation import ugettext_lazy as _
-from django.db.models.query import QuerySet
-from django.db.models import Count
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import Http404
-from django.template import loader
 from django.contrib import admin
-
+from django.db.models import Count
+from django.db.models.query import QuerySet
+from django.utils.translation import ugettext_lazy as _
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import *
 from .forms import *
@@ -33,30 +31,28 @@ class ArticlePlugin(PluginModelAdmin):
     extra_initial_help = None
     fields = ('type', 'placeholder', 'title', 'number', 'page', 'hide_categories', 'published')
 
-    def render(self, context, manager):
-        t = loader.get_template(self.template)
-        articles = Article.objects.select_related().filter(manager=manager, published=True)
-        categories = ArticleCategory.objects.annotate(Count('article')).filter(article__manager=manager)
+    def update_context(self, context, manager):
+        categories = ArticleCategory.objects.filter(article__manager=manager).annotate(article_count=Count('article'))
         if 'kwargs' in context:
             if 'slug' in context['kwargs']:
                 context['slug'] = context['kwargs']['slug']
                 context['category_slug'] = context['kwargs']['category_slug']
                 '''Fetch specific article'''
                 try:
-                    articles = articles.select_related().get(published=True, slug=context['slug'])
+                    articles = Article.objects.select_related().get(published=True, slug=context['slug'])
                 except Article.DoesNotExist:
                     raise Http404
             elif 'category_slug' in context['kwargs']:
                 context['category_slug'] = context['kwargs']['category_slug']
 
                 '''Fetch all articles for requested category'''
-                articles = articles.select_related().filter(published=True, category__slug=context['category_slug']).order_by('-ctime')
+                articles = Article.objects.select_related().filter(published=True, category__slug=context['category_slug']).order_by('-ctime')
                 if len(articles) == 0:
                     raise Http404
 
         elif context['page_slug'] != '':
             ''' Fetch all articles for requested page'''
-            articles = articles.select_related().filter(published=True).order_by('-ctime')
+            articles = Article.objects.select_related().filter(published=True).order_by('-ctime')
 
         if isinstance(articles, QuerySet):
             paginator = Paginator(articles, manager.number)
@@ -71,7 +67,7 @@ class ArticlePlugin(PluginModelAdmin):
         context['categories'] = categories
         context['articles'] = articles
         context['articlemanager'] = manager
-        return t.render(context)
+        return context
 
     def get_changeform_initial_data(self, request):
         initial = {}
@@ -104,7 +100,7 @@ class NewsArticlePlugin(PluginModelAdmin):
         }),
     )
 
-    def render(self, context, manager):
+    def update_context(self, context, manager):
         if manager.manager:
             newsarticles = Article.objects.select_related().\
                                filter(published=True, manager=manager.manager).\
@@ -114,10 +110,9 @@ class NewsArticlePlugin(PluginModelAdmin):
                                filter(published=True).\
                                order_by('-ctime')[:manager.number]
 
-        t = loader.get_template(self.template)
         context['newsarticles'] = newsarticles
         context['newsarticlemanager'] = manager
-        return t.render(context)
+        return context
 
     def get_changeform_initial_data(self, request):
         initial = {}
