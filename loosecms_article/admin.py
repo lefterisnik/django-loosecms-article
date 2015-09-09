@@ -22,7 +22,5 @@ class ArticleAdmin(admin.ModelAdmin):
     get_page.short_description = _('Page')
     get_page.admin_order_field = 'manager__page'
 
-admin.site.register(ArticleManager, ArticlePlugin)
 admin.site.register(ArticleCategory, ArticleCategoryAdmin)
-admin.site.register(NewsArticleManager, NewsArticlePlugin)
 admin.site.register(Article, ArticleAdmin)

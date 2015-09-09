@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
-from django.utils.translation import ugettext_lazy as _
-from django.core.exceptions import ValidationError
 from django.db import models
+from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
+
 from loosecms.models import Plugin, HtmlPage
-from ckeditor.fields import RichTextField
+from loosecms.fields import LoosecmsRichTextField
 
 
 class ArticleManager(Plugin):
+    default_type = 'ArticleManagerPlugin'
+
     title = models.CharField(_('title'), max_length=200,
                              help_text=_('Give the name of the article manager.'))
     number = models.IntegerField(_('number'), null=True, blank=True,
@@ -35,6 +38,8 @@ class ArticleManager(Plugin):
 
 
 class NewsArticleManager(Plugin):
+    default_type = 'NewsArticleManagerPlugin'
+
     title = models.CharField(_('title'), max_length=200,
                              help_text=_('Give the name of the article news manager.'))
     number = models.IntegerField(_('number'),
@@ -42,7 +47,7 @@ class NewsArticleManager(Plugin):
     header_title = models.CharField(_('header title'), max_length=150,
                                     default=_('Recent articles'),
                                     help_text=_('Give the title of the panel which articles will appeared.'))
-    rss = models.BooleanField(_('rss'), default=True,
+    rss = models.BooleanField(_('rss'), default=False,
                               help_text=_('Check this box if you want to appear the rss link in the header.'))
     rss_title = models.CharField(_('rss title'), max_length=200, blank=True,
                                  help_text=_('Give the title of the rss feed.'))
@@ -50,8 +55,9 @@ class NewsArticleManager(Plugin):
                                        help_text=_('Give a small description for the rss feed.'))
     manager = models.ForeignKey(ArticleManager, verbose_name=_('manager'), blank=True, null=True,
                                 limit_choices_to={'published': True},
-                                help_text=_('Select the article manager that contain the request articles.'))
-    interval = models.PositiveSmallIntegerField(_('interval'),
+                                help_text=_('Select the article manager that contain the request articles. In case'
+                                            ' of no selection all artilces form all managers will be included.'))
+    interval = models.PositiveSmallIntegerField(_('interval'), default=2000,
                                                 help_text=_('Set the change rate in miliseconds.'))
     ctime = models.DateTimeField(auto_now_add=True)
 
@@ -90,7 +96,7 @@ class Article(models.Model):
                              help_text=_('Give the name of the article.'))
     slug = models.SlugField(_('slug'), unique=True,
                             help_text=_('Give the slug of the article, to create the url of the article.'))
-    body = RichTextField(_('body'))
+    body = LoosecmsRichTextField(_('body'))
 
     category = models.ForeignKey(ArticleCategory, verbose_name=_('category'),
                                  help_text=_('Select the category of this article.'))

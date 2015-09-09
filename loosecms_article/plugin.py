@@ -7,7 +7,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import *
-from .forms import *
 
 from loosecms.plugin_pool import plugin_pool
 from loosecms.plugin_modeladmin import PluginModelAdmin
@@ -19,17 +18,14 @@ class ArticleInline(admin.StackedInline):
     prepopulated_fields = {'slug': ('title', )}
 
 
-class ArticlePlugin(PluginModelAdmin):
+class ArticleManagerPlugin(PluginModelAdmin):
     model = ArticleManager
-    name = _('Articles')
-    form = ArticleManagerForm
+    name = _('Article Container')
     plugin = True
     template = "plugin/articles.html"
     inlines = [
         ArticleInline,
     ]
-    extra_initial_help = None
-    fields = ('type', 'placeholder', 'title', 'number', 'page', 'hide_categories', 'published')
 
     def update_context(self, context, manager):
         categories = ArticleCategory.objects.filter(article__manager=manager).annotate(article_count=Count('article'))
@@ -69,33 +65,22 @@ class ArticlePlugin(PluginModelAdmin):
         context['articlemanager'] = manager
         return context
 
-    def get_changeform_initial_data(self, request):
-        initial = {}
-        if self.extra_initial_help:
-            initial['type'] = self.extra_initial_help['type']
-            initial['placeholder'] = self.extra_initial_help['placeholder']
-            initial['page'] = self.extra_initial_help['page']
 
-            return initial
-        else:
-            return {'type': 'ArticlePlugin'}
-
-
-class NewsArticlePlugin(PluginModelAdmin):
+class NewsArticleManagerPlugin(PluginModelAdmin):
     model = NewsArticleManager
-    name = _('Recent Articles')
-    form = NewsArticleManagerForm
+    name = _('Recent Article Container')
     plugin = True
     template = "plugin/new_articles.html"
-    extra_initial_help = None
     fieldsets = (
         (None, {
             'fields': ('type', 'placeholder', 'title', 'number', 'published')
         }),
         ('Advanced options', {
+            'classes': ('collapse',),
             'fields': ('manager', 'header_title', 'interval')
         }),
         ('Rss options', {
+            'classes': ('collapse',),
             'fields': ('rss', ('rss_title', 'rss_description'))
         }),
     )
@@ -114,15 +99,5 @@ class NewsArticlePlugin(PluginModelAdmin):
         context['newsarticlemanager'] = manager
         return context
 
-    def get_changeform_initial_data(self, request):
-        initial = {}
-        if self.extra_initial_help:
-            initial['type'] = self.extra_initial_help['type']
-            initial['placeholder'] = self.extra_initial_help['placeholder']
-
-            return initial
-        else:
-            return {'type': 'NewsArticlePlugin'}
-
-plugin_pool.register_plugin(ArticlePlugin)
-plugin_pool.register_plugin(NewsArticlePlugin)
+plugin_pool.register_plugin(ArticleManagerPlugin)
+plugin_pool.register_plugin(NewsArticleManagerPlugin)
