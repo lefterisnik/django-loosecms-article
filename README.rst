@@ -1,6 +1,6 @@
-=======================
-Django Loose CMS - Text
-=======================
+==========================
+Django Loose CMS - Article
+==========================
 
 An article plugin for Django Loose CMS with WYSWYG embeded editor for the article's body.
 
@@ -12,7 +12,6 @@ Loose CMS Text plugin requires:
 * Django version 1.8
 * Python 2.6 or 2.7
 * django-loose-cms
-* django-ckeditor
 * django-haystack
 
 Quick Start
@@ -37,7 +36,7 @@ Quick Start
         'django.contrib.humanize',
     )
 
-4. Run ``python manage.py migrate`` to create the loosecms_text models.
+4. Run ``python manage.py migrate`` to create the loosecms_article models.
 
 5. Run development server ``python manage.py runserver`` and visit http://127.0.0.1:8000/ to start
    playing with the cms.
