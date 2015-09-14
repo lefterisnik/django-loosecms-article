@@ -12,10 +12,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
+        migrations.RemoveField(
             model_name='article',
             name='category',
-            field=loosecms.fields.LoosecmsTaggableManager(to='taggit.Tag', through='taggit.TaggedItem', help_text='A comma-separated list of tags.', verbose_name='category'),
         ),
         migrations.AlterField(
             model_name='article',
