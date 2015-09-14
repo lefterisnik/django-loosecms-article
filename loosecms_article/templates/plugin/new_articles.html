@@ -20,7 +20,7 @@
                         <div class="item">
                     {% endif %}
                     <h5>
-                        <a href="{% url 'info' article.manager.page.slug article.category.slug article.slug %}">{{ article.title }}</a><hr/>
+                        <a href="{% url 'info' article.manager.page.slug article.slug %}">{{ article.title }}</a><hr/>
                     </h5>
                     <h6>
                         {{ article.body|truncatewords_html:10|safe }}

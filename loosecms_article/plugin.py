@@ -6,6 +6,8 @@ from django.db.models.query import QuerySet
 from django.utils.translation import ugettext_lazy as _
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+from taggit.models import Tag
+
 from .models import *
 
 from loosecms.plugin_pool import plugin_pool
@@ -28,11 +30,10 @@ class ArticleManagerPlugin(PluginModelAdmin):
     ]
 
     def update_context(self, context, manager):
-        categories = ArticleCategory.objects.filter(article__manager=manager).annotate(article_count=Count('article'))
+        categories = Tag.objects.filter(article__manager=manager).annotate(article_count=Count('article'))
         if 'kwargs' in context:
             if 'slug' in context['kwargs']:
                 context['slug'] = context['kwargs']['slug']
-                context['category_slug'] = context['kwargs']['category_slug']
                 '''Fetch specific article'''
                 try:
                     articles = Article.objects.select_related().get(published=True, slug=context['slug'])

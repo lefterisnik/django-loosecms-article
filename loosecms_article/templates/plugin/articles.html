@@ -23,8 +23,8 @@
                                     {% else %}
                                         <li>
                                     {% endif %}
-                                    <a href="{% url 'category-info' page_slug cat.slug %}">
-                                        {{ cat.title }} <span class="badge">{{ cat.article_count }}</span>
+                                    <a href="{% url 'article-category-info' page_slug cat.slug %}">
+                                        {{ cat.name }} <span class="badge">{{ cat.article_count }}</span>
                                     </a>
                                 </li>
                                 {% endif %}
@@ -53,11 +53,7 @@
             {{ articles.body|safe }}
         {% else %}
             {% for article in articles %}
-                {% if category_slug %}
-                    <a href="{% url 'info' page_slug category_slug article.slug %}"><h3>{{ article.title }}</h3></a>
-                {% elif page_slug %}
-                    <a href="{% url 'info' page_slug article.category.slug article.slug %}"><h3>{{ article.title }}</h3></a>
-                {% endif %}
+                <a href="{% url 'info' page_slug article.slug %}"><h3>{{ article.title }}</h3></a>
                 <div class="row">
                     <div class="col-lg-6">
                         <h6 class="pull-left"><span class="glyphicon glyphicon-calendar"></span>{% trans 'Posted' %} {{ article.ctime|naturaltime }}</h6>

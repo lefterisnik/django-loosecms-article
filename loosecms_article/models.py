@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
 from loosecms.models import Plugin, HtmlPage
-from loosecms.fields import LoosecmsRichTextField
+from loosecms.fields import LoosecmsRichTextField, LoosecmsTaggableManager
 
 
 class ArticleManager(Plugin):
@@ -80,17 +80,6 @@ class NewsArticleManager(Plugin):
                 raise ValidationError({'rss_description': msg})
 
 
-class ArticleCategory(models.Model):
-    title = models.CharField(_('title'), max_length=200,
-                             help_text=_('Give the name of the category.'))
-    slug = models.SlugField(_('slug'), unique=True,
-                            help_text=_('Give the slug of the category, to create the url of the articles which '
-                                        'refers to this.'))
-
-    def __unicode__(self):
-        return self.title
-
-
 class Article(models.Model):
     title = models.CharField(_('title'), max_length=200,
                              help_text=_('Give the name of the article.'))
@@ -98,13 +87,13 @@ class Article(models.Model):
                             help_text=_('Give the slug of the article, to create the url of the article.'))
     body = LoosecmsRichTextField(_('body'))
 
-    category = models.ForeignKey(ArticleCategory, verbose_name=_('category'),
-                                 help_text=_('Select the category of this article.'))
+    category = LoosecmsTaggableManager(_('category'))
+
     manager = models.ForeignKey(ArticleManager, verbose_name=_('manager'),
                                 help_text=_('Select the article manager of this article.'))
-    ctime = models.DateTimeField(_('ctime'), auto_now_add=True)
+    ctime = models.DateTimeField(auto_now_add=True)
 
-    utime = models.DateTimeField(_('utime'), auto_now=True)
+    utime = models.DateTimeField(auto_now=True)
 
     published = models.BooleanField(_('published'), default=True)
 
