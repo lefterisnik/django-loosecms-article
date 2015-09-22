@@ -10,8 +10,10 @@ from loosecms.fields import LoosecmsRichTextField, LoosecmsTaggableManager
 class ArticleManager(Plugin):
     default_type = 'ArticleManagerPlugin'
 
-    title = models.CharField(_('title'), max_length=200,
+    title = models.CharField(_('title'), max_length=200, unique=True,
                              help_text=_('Give the name of the article manager.'))
+    slug = models.SlugField(_('slug'), unique=True,
+                            help_text=_('Give the slug of the article manager.'))
     number = models.IntegerField(_('number'), null=True, blank=True,
                                  help_text=_('Give the number of articles per page.'))
     page = models.ForeignKey(HtmlPage, verbose_name=_('page'),
@@ -40,8 +42,10 @@ class ArticleManager(Plugin):
 class NewsArticleManager(Plugin):
     default_type = 'NewsArticleManagerPlugin'
 
-    title = models.CharField(_('title'), max_length=200,
+    title = models.CharField(_('title'), max_length=200, unique=True,
                              help_text=_('Give the name of the article news manager.'))
+    slug = models.SlugField(_('slug'), unique=True,
+                            help_text=_('Give the slug of the article news manager.'))
     number = models.IntegerField(_('number'),
                                  help_text=_('Give the number of articles rendering by this manager'))
     header_title = models.CharField(_('header title'), max_length=150,
