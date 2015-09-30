@@ -87,7 +87,7 @@ class NewsArticleManagerPlugin(PluginModelAdmin):
         }),
         ('Rss options', {
             'classes': ('collapse',),
-            'fields': ('rss', ('rss_title', 'rss_description'))
+            'fields': ('rss', 'rss_title', 'rss_description')
         }),
     )
 

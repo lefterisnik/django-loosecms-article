@@ -4,10 +4,11 @@ from .views import *
 
 from loosecms.views import detail
 
-app_urlpatterns = [
-    url(r'^syndication/(?P<manager_pk>[0-9]+)/$', NewsFeed(), name='syndication'),
+urlpatterns = [
+    url(r'^articles/syndication/(?P<manager_pk>[0-9]+)/$', NewsFeed(), name='article-syndication'),
 ]
 
-urlpatterns = [
-     url(r'^article-category/(?P<category_slug>[0-9A-Za-z-_.]+)/$', detail, name='article-category-info')
+embed_urlpatterns = [
+     url(r'^(?P<slug>[0-9A-Za-z-_.]+)/$', detail, name='info'),
+     url(r'^article-category/(?P<category_slug>[0-9A-Za-z-_.]+)/$', detail, name='article-category-info'),
 ]

@@ -1,4 +1,4 @@
-{% load i18n humanize %}
+{% load i18n humanize cms_tags %}
 {% if not articlemanager.hide_categories %}
 <div class="row">
     <div class="col-lg-12">
@@ -53,7 +53,7 @@
             {{ articles.body|safe }}
         {% else %}
             {% for article in articles %}
-                <a href="{% url 'info' page_slug article.slug %}"><h3>{{ article.title }}</h3></a>
+                <a href="{% url 'info' article.manager.page.slug article.slug %}"><h3>{{ article.title }}</h3></a>
                 <div class="row">
                     <div class="col-lg-6">
                         <h6 class="pull-left"><span class="glyphicon glyphicon-calendar"></span>{% trans 'Posted' %} {{ article.ctime|naturaltime }}</h6>

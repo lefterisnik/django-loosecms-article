@@ -4,7 +4,7 @@
         <h3 class="panel-title">
             {{ newsarticlemanager.title }}
             {% if newsarticlemanager.rss %}
-            <a href="{% url 'syndication' newsarticlemanager.pk %}" class="pull-right">
+            <a href="{% url 'article-syndication' newsarticlemanager.pk %}" class="pull-right">
                 <span class="fa fa-rss"></span>
             </a>
             {% endif %}
