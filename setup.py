@@ -32,5 +32,6 @@ setup(
         'Django>=1.8,<1.9',
         'django-loose-cms',
         'django-haystack',
+        'django-parler',
     ],
 )
