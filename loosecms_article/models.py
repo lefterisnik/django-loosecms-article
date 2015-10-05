@@ -6,6 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from loosecms.models import Plugin, HtmlPage
 from loosecms.fields import LoosecmsRichTextField, LoosecmsTaggableManager
 
+from parler.models import TranslatableModel, TranslatedFields
 
 class ArticleManager(Plugin):
     default_type = 'ArticleManagerPlugin'
@@ -80,17 +81,13 @@ class NewsArticleManager(Plugin):
                 msg = _('You will need to give a rss title if rss is checked')
                 raise ValidationError({'rss_title': msg})
             if not self.rss_description:
-                msg = _('Youn will need to give a rss description if rss is checked')
+                msg = _('You will need to give a rss description if rss is checked')
                 raise ValidationError({'rss_description': msg})
 
 
-class Article(models.Model):
-    title = models.CharField(_('title'), max_length=200,
-                             help_text=_('Give the name of the article.'))
+class Article(TranslatableModel):
     slug = models.SlugField(_('slug'), unique=True,
                             help_text=_('Give the slug of the article, to create the url of the article.'))
-    body = LoosecmsRichTextField(_('body'))
-
     category = LoosecmsTaggableManager(_('category'))
 
     manager = models.ForeignKey(ArticleManager, verbose_name=_('manager'),
@@ -101,7 +98,12 @@ class Article(models.Model):
 
     published = models.BooleanField(_('published'), default=True)
 
+    translations = TranslatedFields(
+        title = models.CharField(_('title'), max_length=200,
+                             help_text=_('Give the name of the article.')),
+        body = LoosecmsRichTextField(_('body'))
+    )
+
     def __unicode__(self):
         return self.title
-
 

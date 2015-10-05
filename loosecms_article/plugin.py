@@ -13,11 +13,16 @@ from .models import *
 from loosecms.plugin_pool import plugin_pool
 from loosecms.plugin_modeladmin import PluginModelAdmin
 
+from parler.admin import TranslatableStackedInline
 
-class ArticleInline(admin.StackedInline):
+
+class ArticleInline(TranslatableStackedInline):
     model = Article
     extra = 1
-    prepopulated_fields = {'slug': ('title', )}
+    fields = ('title', 'slug', 'body', 'category', 'manager', 'published')
+
+    def get_prepopulated_fields(self, request, obj=None):
+        return {'slug': ('title',)}
 
 
 class ArticleManagerPlugin(PluginModelAdmin):
@@ -93,11 +98,11 @@ class NewsArticleManagerPlugin(PluginModelAdmin):
 
     def update_context(self, context, manager):
         if manager.manager:
-            newsarticles = Article.objects.select_related().\
+            newsarticles = Article.objects.select_related('manager__page').\
                                filter(published=True, manager=manager.manager).\
                                order_by('-ctime')[:manager.number]
         else:
-            newsarticles = Article.objects.select_related().\
+            newsarticles = Article.objects.select_related('manager__page').\
                                filter(published=True).\
                                order_by('-ctime')[:manager.number]
 
