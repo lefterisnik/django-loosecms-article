@@ -102,7 +102,7 @@
             <div class="clearfix">
                 <blockquote>
                     <p><a href="{% url 'article-category-info' page_slug category.slug %}">{{ category.name }}</a></p>
-                    <span class="badge pull-right">{{ category.doc_count }} {% if category.doc_count == 1 %}{% trans 'article'%}{% else %}{% trans 'articles'%}{% endif %}</span>
+                    <span class="badge pull-right">{{ category.article_count }} {% if category.article_count == 1 %}{% trans 'article'%}{% else %}{% trans 'articles'%}{% endif %}</span>
 
                     {% if category.description %}
                     <footer>{{ category.description }}</footer>
