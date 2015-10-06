@@ -6,12 +6,13 @@ from django.db.models.query import QuerySet
 from django.utils.translation import ugettext_lazy as _
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from taggit.models import Tag
+#from taggit.models import Tag
 
 from .models import *
 
 from loosecms.plugin_pool import plugin_pool
 from loosecms.plugin_modeladmin import PluginModelAdmin
+from loosecms.models import LoosecmsTag
 
 from parler.admin import TranslatableStackedInline
 
@@ -35,7 +36,7 @@ class ArticleManagerPlugin(PluginModelAdmin):
     ]
 
     def update_context(self, context, manager):
-        categories = Tag.objects.filter(article__manager=manager).annotate(article_count=Count('article'))
+        categories = LoosecmsTag.objects.filter(article__manager=manager).annotate(article_count=Count('article'))
         if 'kwargs' in context:
             if 'slug' in context['kwargs']:
                 context['slug'] = context['kwargs']['slug']

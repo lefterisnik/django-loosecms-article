@@ -3,10 +3,11 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
-from loosecms.models import Plugin, HtmlPage
+from loosecms.models import Plugin, HtmlPage, LoosecmsTagged
 from loosecms.fields import LoosecmsRichTextField, LoosecmsTaggableManager
 
 from parler.models import TranslatableModel, TranslatedFields
+
 
 class ArticleManager(Plugin):
     default_type = 'ArticleManagerPlugin'
@@ -21,6 +22,9 @@ class ArticleManager(Plugin):
                              limit_choices_to={'is_template': False},
                              help_text=_('Select the page which this article manager will showed. Is needed to know '
                                          'the page of the article manager to create the unique article urls.'))
+    category_page = models.BooleanField(_('show category page'), default=True,
+                                        help_text=_('Check this box if you want to show all categories in this page'
+                                                    'or show instant the articles'))
     hide_categories = models.BooleanField(_('hide categories list'), default=False,
                                           help_text=_('Select if you want to hide the category list view.'))
     ctime = models.DateTimeField(auto_now_add=True)
@@ -88,7 +92,7 @@ class NewsArticleManager(Plugin):
 class Article(TranslatableModel):
     slug = models.SlugField(_('slug'), unique=True,
                             help_text=_('Give the slug of the article, to create the url of the article.'))
-    category = LoosecmsTaggableManager(_('category'))
+    category = LoosecmsTaggableManager(_('category'), through=LoosecmsTagged)
 
     manager = models.ForeignKey(ArticleManager, verbose_name=_('manager'),
                                 help_text=_('Select the article manager of this article.'))

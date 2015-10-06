@@ -1,5 +1,6 @@
 {% load i18n humanize cms_tags %}
 {% if not articlemanager.hide_categories %}
+{% if slug or category_slug or page_slug and not articlemanager.category_page %}
 <div class="row">
     <div class="col-lg-12">
         <div class="panel-group" id="accordion">
@@ -16,15 +17,15 @@
                 {% endif %}
                     <div class="panel-body">
                         <ul class="nav nav-pills">
-                            {% for cat in categories %}
-                                {% if cat.article__count != 0 %}
-                                    {% if cat.slug == category_slug %}
+                            {% for category in categories %}
+                                {% if category.article__count != 0 %}
+                                    {% if category.slug == category_slug %}
                                         <li class="active">
                                     {% else %}
                                         <li>
                                     {% endif %}
-                                    <a href="{% url 'article-category-info' page_slug cat.slug %}">
-                                        {{ cat.name }} <span class="badge">{{ cat.article_count }}</span>
+                                    <a href="{% url 'article-category-info' page_slug category.slug %}">
+                                        {{ category.name }} <span class="badge">{{ category.article_count }}</span>
                                     </a>
                                 </li>
                                 {% endif %}
@@ -36,6 +37,7 @@
         </div>
     </div>
 </div>
+{% endif %}
 {% endif %}
 <div class="row">
     <div class="col-lg-12">
@@ -51,7 +53,7 @@
             </div>
             <hr/>
             {{ articles.body|safe }}
-        {% else %}
+        {% elif category_slug or page_slug and not articlemanager.category_page %}
             {% for article in articles %}
                 <a href="{% url 'info' article.manager.page.slug article.slug %}"><h3>{{ article.title }}</h3></a>
                 <div class="row">
@@ -95,6 +97,21 @@
                     {% endif %}
                 </ul>
             {% endif %}
+        {% elif page_slug and articlemanager.category_page %}
+            {% for category in categories %}
+            <div class="clearfix">
+                <blockquote>
+                    <p><a href="{% url 'article-category-info' page_slug category.slug %}">{{ category.name }}</a></p>
+                    <span class="badge pull-right">{{ category.doc_count }} {% if category.doc_count == 1 %}{% trans 'article'%}{% else %}{% trans 'articles'%}{% endif %}</span>
+
+                    {% if category.description %}
+                    <footer>{{ category.description }}</footer>
+                    {% endif %}
+                </blockquote>
+            </div>
+            {% empty %}
+                <div class="alert alert-info" role="alert">{% trans 'No categories found' %}</div>
+            {% endfor %}
         {% endif %}
     </div>
 </div>
