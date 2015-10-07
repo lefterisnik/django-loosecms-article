@@ -7,7 +7,7 @@ from loosecms.models import Plugin, HtmlPage, LoosecmsTagged
 from loosecms.fields import LoosecmsRichTextField, LoosecmsTaggableManager
 
 from parler.models import TranslatableModel, TranslatedFields
-
+from parler.managers import TranslationManager
 
 class ArticleManager(Plugin):
     default_type = 'ArticleManagerPlugin'
@@ -89,6 +89,11 @@ class NewsArticleManager(Plugin):
                 raise ValidationError({'rss_description': msg})
 
 
+class CustomManager(TranslationManager):
+
+    def get_queryset(self):
+        return super(CustomManager, self).get_queryset().prefetch_related('translations')
+
 class Article(TranslatableModel):
     slug = models.SlugField(_('slug'), unique=True,
                             help_text=_('Give the slug of the article, to create the url of the article.'))
@@ -107,6 +112,8 @@ class Article(TranslatableModel):
                              help_text=_('Give the name of the article.')),
         body = LoosecmsRichTextField(_('body'))
     )
+
+    objects = CustomManager()
 
     def __unicode__(self):
         return self.title
