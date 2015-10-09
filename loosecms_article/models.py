@@ -94,10 +94,11 @@ class CustomManager(TranslationManager):
     def get_queryset(self):
         return super(CustomManager, self).get_queryset().prefetch_related('translations')
 
+
 class Article(TranslatableModel):
     slug = models.SlugField(_('slug'), unique=True,
                             help_text=_('Give the slug of the article, to create the url of the article.'))
-    category = LoosecmsTaggableManager(_('category'), through=LoosecmsTagged)
+    category = LoosecmsTaggableManager(_('category'), through=LoosecmsTagged, blank=True)
 
     manager = models.ForeignKey(ArticleManager, verbose_name=_('manager'),
                                 help_text=_('Select the article manager of this article.'))
