@@ -9,6 +9,7 @@ from loosecms.fields import LoosecmsRichTextField, LoosecmsTaggableManager
 from parler.models import TranslatableModel, TranslatedFields
 from parler.managers import TranslationManager
 
+
 class ArticleManager(Plugin):
     default_type = 'ArticleManagerPlugin'
 

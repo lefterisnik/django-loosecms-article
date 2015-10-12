@@ -34,6 +34,7 @@ class ArticleManagerPlugin(PluginModelAdmin):
     inlines = [
         ArticleInline,
     ]
+    prepopulated_fields = {'slug': ('title', )}
 
     def update_context(self, context, manager):
         categories = LoosecmsTag.objects.filter(article__manager=manager).annotate(article_count=Count('article'))
