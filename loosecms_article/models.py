@@ -125,3 +125,15 @@ class Article(TranslatableModel):
     def __unicode__(self):
         return self.title
 
+    def clean(self):
+        """
+        Do not allow article formed url to be a page slug
+        :return:
+        """
+        pages = HtmlPage.objects.all().values('slug')
+        article_slug = '/'.join(self.manager.page.slug.split('/') + [self.slug])
+        for page in pages:
+            if article_slug == page['slug'].strip('/'):
+                msg = _('The formed article url "%s" is already exist as page url' % article_slug)
+                raise ValidationError({'slug': msg})
+
