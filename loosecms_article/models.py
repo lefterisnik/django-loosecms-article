@@ -37,12 +37,17 @@ class ArticleManager(Plugin):
 
     def clean(self):
         """
-        Don't allow articlesmanager to be attached in home page. This cause 404 eror
+        Don't allow article manager to be attached in home page. This cause 404 error
+        Don't allow article manager to be attached in the same page with a doc manager
         :return: cleaned_data and errors
         """
         if self.page.home:
             msg = _("Article manager can't be attached to the home page. Please select another page.")
             raise ValidationError({'page': msg})
+
+        if self.page.docmanager_set.all().count() != 0:
+            msg = _("Conflict! In this page is already exist a document plugin, so you can't add article plugin.")
+            raise ValidationError(msg)
 
 
 class NewsArticleManager(Plugin):
