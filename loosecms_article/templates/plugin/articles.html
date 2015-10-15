@@ -82,7 +82,7 @@
                         <li><a href="?pageset={{ articles.previous_page_number }}">{{ articles.previous_page_number }}</a></li>
                     {% endif %}
 
-                    <li class="active"><a href="?page={{ articles.number }}">{{ articles.number }}</a></li>
+                    <li class="active"><a href="?pageset={{ articles.number }}">{{ articles.number }}</a></li>
 
                     {% if articles.has_next %}
                         <li><a href="?pageset={{ articles.next_page_number }}">{{ articles.next_page_number }}</a></li>

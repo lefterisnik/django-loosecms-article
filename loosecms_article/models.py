@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
@@ -122,8 +123,8 @@ class Article(TranslatableModel):
 
     objects = CustomManager()
 
-    def __unicode__(self):
-        return self.title
+    def get_absolute_url(self):
+        return reverse('info', args=(self.manager.page.slug, self.slug))
 
     def clean(self):
         """
@@ -136,4 +137,7 @@ class Article(TranslatableModel):
             if article_slug == page['slug'].strip('/'):
                 msg = _('The formed article url "%s" is already exist as page url' % article_slug)
                 raise ValidationError({'slug': msg})
+
+    def __unicode__(self):
+        return self.title
 
