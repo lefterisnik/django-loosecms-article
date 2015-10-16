@@ -2,6 +2,5 @@ include LICENSE
 include README.rst
 recursive-include loosecms_article/locale *
 recursive-include loosecms_article/templates *
-recursive-include loosecms_article/templatetags *
 recursive-include loosecms_article/management *
 recursive-include loosecms_article/migrations *
