@@ -65,7 +65,8 @@
                     </div>
                 </div>
                 <hr/>
-                {{ article.body|safe }}
+                {{ article.body|myf }}
+
                 <br/>
             {% endfor %}
             {% if articles.paginator.num_pages != 1 and articles|length != 1 %}
